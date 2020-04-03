@@ -40,3 +40,6 @@ out/
 
 #build folder
 build/
+
+#vs code folder
+.vscode/

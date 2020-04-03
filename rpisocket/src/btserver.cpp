@@ -1,6 +1,6 @@
-#include "BtServer.hpp"
+#include "btserver.hpp"
 
-BTServer::BTServer()
+rpisocket::BTServer::BTServer()
 {
     opt = sizeof(client_address);
     bdaddr_t tmp = {0,0,0,0,0,0}; //define empty bt address
@@ -16,7 +16,7 @@ BTServer::BTServer()
     bind(sock,(struct sockaddr*)&local_address, sizeof(local_address));
 }
 
-BTServer::~BTServer()
+rpisocket::BTServer::~BTServer()
 {
     shutdown(sock, 2);
     //close the connection
@@ -24,12 +24,12 @@ BTServer::~BTServer()
     close(sock);
 }
 
-bool BTServer::hasConnection()
+bool rpisocket::BTServer::hasConnection()
 {
     return connected;
 }
 
-bool BTServer::connect()
+bool rpisocket::BTServer::connect()
 {
     char buf[1024] = { 0 };
     listen(sock, 1);
@@ -41,78 +41,40 @@ bool BTServer::connect()
     return connected;
 }
 
-int BTServer::writeBytes(string msg)
+int rpisocket::BTServer::writeBytes(string msg)
 {
-    lock_guard<std::mutex> guard(mtx);
+    std::lock_guard<std::mutex> guard(mtx);
     int status = -1;
-    if(!connected)
-        return status;  
+    if(!connected){
+        return status; 
+    } 
     status = write(client, msg.c_str(), msg.length());
-    if(status == -1)
+    if(status == -1){
         connected = false;
-
+    }
     return status;
 }
 
-string BTServer::readBytes()
+std::string rpisocket::BTServer::readBytes()
 {
-    lock_guard<std::mutex> guard(mtx);
-    if(!connected)
+    std::lock_guard<std::mutex> guard(mtx);
+    if(!connected){
         return NOTCONNECTED;
+    }
     char buf[1024] = { 0 };
     int bytes_read = read(client, buf, sizeof(buf));
 
-    if(bytes_read > 0)
-        return (string)buf;
-    if(bytes_read == -1)
+    if(bytes_read > 0){
+        return (std::string)buf;
+    }
+    if(bytes_read == -1){
         connected = false;
-
+    }
     return NODATA;
 }
 
-/*void BTServer::readThreadOn()
-{
-    threadOn = true;
-    thrd = thread(&BTServer::readBuffer, this);
-}
 
-void BTServer::readBuffer()
+std::string rpisocket::BTServer::getConnectedClient()
 {
-    double secs = 0.05;
-    char buf[1024] = { 0 };
-    while(threadOn)
-    {
-        buffer = readBytes();
-        bufferChange = true;
-
-        clock_t end_time = secs * CLOCKS_PER_SEC + clock();
-        while(clock() < end_time)
-        {
-        }
-    }
-}
-
-void BTServer::readThreadOff()
-{
-    threadOn = false;
-    thrd.join();
-}
-
-string BTServer::getBuffer()
-{
-    lock_guard<std::mutex> guard(mtx);
-    string retVal = buffer;
-    bufferChange = false;
-    return retVal;
-}
-
-bool BTServer::bufferChanged()
-{
-    lock_guard<std::mutex> guard(mtx);
-    return bufferChange;
-}*/
-
-string BTServer::getConnectedClient()
-{
-    return string(mac_addr);
+    return std::string(mac_addr);
 }

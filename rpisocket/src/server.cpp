@@ -1,12 +1,12 @@
 #include "Server.hpp"
 
-void Server::readThreadOn()
+void rpisocket::Server::readThreadOn()
 {
     threadOn = true;
     thrd = thread(&Server::readBuffer, this);
 }
 
-void Server::readBuffer()
+void rpisocket::Server::readBuffer()
 {
     while(threadOn)
     {
@@ -20,22 +20,22 @@ void Server::readBuffer()
     }
 }
 
-void Server::readThreadOff()
+void rpisocket::Server::readThreadOff()
 {
     threadOn = false;
     thrd.join();
 }
 
-string Server::getBuffer()
+std::string rpisocket::Server::getBuffer()
 {
-    lock_guard<std::mutex> guard(mtx);
+    std::lock_guard<std::mutex> guard(mtx);
     string retVal = buffer;
     bufferChange = false;
     return retVal;
 }
 
-bool Server::bufferChanged()
+bool rpisocket::Server::bufferChanged()
 {
-    lock_guard<std::mutex> guard(mtx);
+    std::lock_guard<std::mutex> guard(mtx);
     return bufferChange;
 }
