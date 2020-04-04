@@ -2,7 +2,6 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
-#include <vector>
 #include <iostream>
 #include <string>
 #include "server.hpp"
@@ -11,25 +10,22 @@
 #define RPISOCKET_WIFISERVER_H
 
 namespace rpisocket {
-    class WiFiServer
+    class WiFiServer : public Server
     {
     private:
-        int sockfd, newsockfd, port;
-        socklen_t clilen;
-        struct sockaddr_in server;
-        std::vector<struct sockaddr_in> clients;
-        const int accept_key = 1234;
+        mutable int sock_, newsock_, port_;
+        mutable struct sockaddr_in server_, client_;
+        mutable bool connected_ {false};
 
     public:
         WiFiServer(int port);
         ~WiFiServer();
 
-        const std::vector<std::string>& getBuffer() const;
-        void sendMsgToClient(sockaddr_in client, const std::string& msg) const;
-        bool hasClients() const; //Server has connected clients
-        std::vector<sockaddr_in>  getClients() const;
-        void stopServer() const;
-        void disconnectClient(sockaddr_in client) const;
+        bool connect() const;
+        bool hasConnection() const;
+        std::string readBytes() const;
+        int writeBytes(const std::string& msg) const;
+        std::string getConnectedClient() const;
     };
 }
 #endif

@@ -3,35 +3,83 @@
 rpisocket::WiFiServer::WiFiServer(int port)
 {
     int opt = 1;
-    sockfd = socket(AF_INET, SOCK_STREAM, 0);
-    if(sockfd <= 0)
+    sock_ = socket(AF_INET, SOCK_STREAM, 0);
+    if(sock_ <= 0){
         std::invalid_argument("error opening socket!\n");
+    }
 
     // Forcefully attaching socket to the port
-    if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt))){
+    if (setsockopt(sock_, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt))){
         perror("setsockopt");
         exit(EXIT_FAILURE);
     }
 
-    this->port = port;
-    server.sin_family = AF_INET;
-    server.sin_addr.s_addr = INADDR_ANY;
-    server.sin_port = htons(port);
+    this->port_ = port;
+    server_.sin_family = AF_INET;
+    server_.sin_addr.s_addr = INADDR_ANY;
+    server_.sin_port = htons(port);
 
     //bind socket to the port
-    if (bind(sockfd, (struct sockaddr *) &server, sizeof(server)) < 0){
+    if (bind(sock_, (struct sockaddr *) &server_, sizeof(server_)) < 0){
         std::invalid_argument("error binding server\n");
     }
 }
 
-const std::vector<std::string>& rpisocket::WiFiServer::getBuffer() const
-{
-    std::vector<std::string> buf;
 
-    return buf;
+rpisocket::WiFiServer::~WiFiServer() {
+    //close the connection
+    close(sock_);
+    close(newsock_);
 }
 
-void rpisocket::WiFiServer::sendMsgToClient(sockaddr_in client, const std::string& msg) const
-{
+bool rpisocket::WiFiServer::connect() const {
+    std::lock_guard<std::mutex> guard(mtx_);
+    connected_ = false;
+    listen(sock_ , 3);
+     
+    int c = sizeof(struct sockaddr_in);
+    newsock_ = accept(sock_, (struct sockaddr *)&client_, (socklen_t*)&c);
+    if (newsock_ < 0)
+    {
+        perror("accept failed");
+    }
+    connected_ = true;
+}
 
+bool rpisocket::WiFiServer::hasConnection() const {
+    return connected_;
+}
+
+std::string rpisocket::WiFiServer::readBytes() const {
+    if(!connected_){
+        return NOTCONNECTED;
+    }
+    char buf[1024] = { 0 };
+    std::lock_guard<std::mutex> guard(mtx_);
+    int bytes_read = read(newsock_, buf, sizeof(buf));
+
+    if(bytes_read > 0){
+        return (std::string)buf;
+    }
+    if(bytes_read == -1){
+        connected_ = false;
+    }
+    return NODATA;
+}
+
+int rpisocket::WiFiServer::writeBytes(const std::string& msg) const {
+    int status = -1;
+    if(!connected_){
+        return status; 
+    } 
+    std::lock_guard<std::mutex> guard(mtx_);
+    status = write(newsock_, msg.c_str(), msg.length());
+    if(status == -1){
+        connected_ = false;
+    }
+    return status;
+}
+
+std::string rpisocket::WiFiServer::getConnectedClient() const {
+    return "";
 }

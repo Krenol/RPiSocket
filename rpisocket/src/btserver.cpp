@@ -31,6 +31,7 @@ bool rpisocket::BTServer::hasConnection() const
 
 bool rpisocket::BTServer::connect() const
 {
+    std::lock_guard<std::mutex> guard(mtx_);
     char buf[1024] = { 0 };
     listen(sock_, 1);
     client_ = accept(sock_, (struct sockaddr *)&client_address_, &opt_);
@@ -43,11 +44,11 @@ bool rpisocket::BTServer::connect() const
 
 int rpisocket::BTServer::writeBytes(const std::string& msg) const
 {
-    std::lock_guard<std::mutex> guard(mtx_);
     int status = -1;
     if(!connected_){
         return status; 
     } 
+    std::lock_guard<std::mutex> guard(mtx_);
     status = write(client_, msg.c_str(), msg.length());
     if(status == -1){
         connected_ = false;
@@ -57,11 +58,11 @@ int rpisocket::BTServer::writeBytes(const std::string& msg) const
 
 std::string rpisocket::BTServer::readBytes() const
 {
-    std::lock_guard<std::mutex> guard(mtx_);
     if(!connected_){
         return NOTCONNECTED;
     }
     char buf[1024] = { 0 };
+    std::lock_guard<std::mutex> guard(mtx_);
     int bytes_read = read(client_, buf, sizeof(buf));
 
     if(bytes_read > 0){
