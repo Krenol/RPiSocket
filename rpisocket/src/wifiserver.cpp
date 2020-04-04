@@ -24,14 +24,14 @@ rpisocket::WiFiServer::WiFiServer(int port)
     }
 }
 
-std::vector<std::string> rpisocket::WiFiServer::getBuffer()
+const std::vector<std::string>& rpisocket::WiFiServer::getBuffer() const
 {
     std::vector<std::string> buf;
 
     return buf;
 }
 
-void rpisocket::WiFiServer::sendMsgToClient(sockaddr_in client, std::string msg)
+void rpisocket::WiFiServer::sendMsgToClient(sockaddr_in client, const std::string& msg) const
 {
 
 }

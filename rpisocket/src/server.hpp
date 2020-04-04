@@ -3,40 +3,44 @@
 #include <vector>
 #include <iostream>
 #include <string>
-
+#include <chrono>
 #include <thread>
-#include <mutex>          // std::mutex
+#include <mutex>      
 
 #ifndef RPISOCKET_SERVER_H
 #define RPISOCKET_SERVER_H
 
 #define NOTCONNECTED "not connected"
 #define NODATA "no data"
+
+typedef const std::function<void(std::string)>* subFunc;
+
 namespace rpisocket {
 
     class Server
     {
     private:
-        std::thread thrd;
-        bool threadOn, bufferChange;
-        std::string buffer;
+        mutable std::thread thread_;
+        mutable bool threadOn_;
+        mutable std::vector<subFunc> subs_;
+        void notify(const std::string& msg) const;
+        void readBuffer() const;
+
     protected:
-        int sock;
-        double waitingTime = 0.05;
-        std::mutex mtx;
-        void readBuffer();
+        int sock_;
+        const std::chrono::milliseconds wait_duration_ = std::chrono::milliseconds(50);
+        mutable std::mutex mtx_;
 
     public:
-        virtual bool hasConnection() = 0;
-        virtual bool connect() = 0;
-        virtual std::string getConnectedClient() = 0;
-        virtual std::string readBytes()=0;
-        virtual int writeBytes(string msg)=0;
-        void readThreadOn();
-        void readThreadOff();
-        std::string getBuffer();
-        bool bufferChanged();
-
+        virtual bool hasConnection() const = 0;
+        virtual bool connect() const = 0;
+        virtual std::string getConnectedClient() const = 0;
+        virtual std::string readBytes() const = 0;
+        virtual int writeBytes(const std::string& msg) const = 0;
+        void readThreadOn() const;
+        void readThreadOff() const;
+        int subscribe(subFunc func) const;
+        bool unsubscribe(int pos) const;
     };
 }
 #endif

@@ -10,22 +10,21 @@ namespace rpisocket {
     class BTServer : public Server
     {
     private:
-        int client;
-        sockaddr_rc local_address = {0}, client_address= {0};
-        bool connected = false, threadOn = false, bufferChange = false;
-        socklen_t opt;
-        char mac_addr[18] = "XX:XX:XX:XX:XX:XX";
-        std::string buffer = "";
+        mutable int client_;
+        sockaddr_rc local_address_ = {0}, client_address_ = {0};
+        mutable bool connected_ = false;
+        mutable socklen_t opt_;
+        char mac_addr_[18] = "XX:XX:XX:XX:XX:XX";
 
 
     public:
         BTServer();
         ~BTServer();
-        bool connect();
-        bool hasConnection();
-        std::string readBytes();
-        int writeBytes(string msg);
-        std::string getConnectedClient();
+        bool connect() const;
+        bool hasConnection() const;
+        std::string readBytes() const;
+        int writeBytes(const std::string& msg) const;
+        std::string getConnectedClient() const;
 
     };
 }

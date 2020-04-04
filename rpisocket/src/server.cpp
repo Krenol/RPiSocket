@@ -1,41 +1,54 @@
-#include "Server.hpp"
+#include "server.hpp"
 
-void rpisocket::Server::readThreadOn()
+void rpisocket::Server::readThreadOn() const
 {
-    threadOn = true;
-    thrd = thread(&Server::readBuffer, this);
+    threadOn_ = true;
+    thread_ = std::thread(&Server::readBuffer, this);
 }
 
-void rpisocket::Server::readBuffer()
+void rpisocket::Server::readBuffer() const
 {
-    while(threadOn)
+    while(threadOn_)
     {
-        buffer = readBytes();
-        bufferChange = true;
-
-        clock_t end_time = waitingTime * CLOCKS_PER_SEC + clock();
-        while(clock() < end_time)
-        {
-        }
+        //read incoming msg
+        auto msg = readBytes();
+        //notify all subscribed agents
+        notify(msg);
+        std::this_thread::sleep_for(wait_duration_);
     }
 }
 
-void rpisocket::Server::readThreadOff()
+void rpisocket::Server::readThreadOff() const
 {
-    threadOn = false;
-    thrd.join();
+    threadOn_ = false;
+    thread_.join();
 }
 
-std::string rpisocket::Server::getBuffer()
+int rpisocket::Server::subscribe(subFunc func) const
 {
-    std::lock_guard<std::mutex> guard(mtx);
-    string retVal = buffer;
-    bufferChange = false;
-    return retVal;
+    std::lock_guard<std::mutex> guard(mtx_);
+    subs_.push_back(func);
+    return subs_.size() - 1;
 }
 
-bool rpisocket::Server::bufferChanged()
+
+bool rpisocket::Server::unsubscribe(int pos) const
 {
-    std::lock_guard<std::mutex> guard(mtx);
-    return bufferChange;
+    if(pos >= subs_.size() || pos < 0) return false;
+
+    std::lock_guard<std::mutex> guard(mtx_);
+    subs_.erase (subs_.begin() + pos);
+    return true;
+}
+
+void rpisocket::Server::notify(const std::string& msg) const
+{
+    std::lock_guard<std::mutex> guard(mtx_);
+    for(auto f : subs_) {
+        try{
+            (*f)(msg);
+        } catch(...) {
+            continue;
+        }
+    }
 }
