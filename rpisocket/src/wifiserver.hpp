@@ -15,14 +15,12 @@ namespace rpisocket {
     private:
         mutable int sock_, newsock_, port_;
         mutable struct sockaddr_in server_, client_;
-        mutable bool connected_ {false};
 
     public:
         WiFiServer(int port);
         ~WiFiServer();
 
         bool connect() const;
-        bool hasConnection() const;
         std::string readBytes() const;
         int writeBytes(const std::string& msg) const;
         std::string getConnectedClient() const;

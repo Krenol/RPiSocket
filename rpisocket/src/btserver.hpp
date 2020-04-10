@@ -14,14 +14,13 @@ namespace rpisocket {
         sockaddr_rc local_address_ = {0}, client_address_ = {0};
         mutable bool connected_ = false;
         mutable socklen_t opt_;
-        char mac_addr_[18] = "XX:XX:XX:XX:XX:XX";
+        mutable std::string client_addr_ = "";
 
 
     public:
         BTServer();
         ~BTServer();
         bool connect() const;
-        bool hasConnection() const;
         std::string readBytes() const;
         int writeBytes(const std::string& msg) const;
         std::string getConnectedClient() const;

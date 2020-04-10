@@ -30,13 +30,16 @@ namespace rpisocket {
         int sock_;
         const std::chrono::milliseconds wait_duration_ = std::chrono::milliseconds(50);
         mutable std::mutex mtx_;
+        mutable bool connected_ {false};
+        void checkConnection() const;
+        void throwConnectionLost() const;
 
     public:
-        virtual bool hasConnection() const = 0;
         virtual bool connect() const = 0;
         virtual std::string getConnectedClient() const = 0;
         virtual std::string readBytes() const = 0;
         virtual int writeBytes(const std::string& msg) const = 0;
+        bool hasConnection() const;
         void readThreadOn() const;
         void readThreadOff() const;
         int subscribe(subFunc func) const;

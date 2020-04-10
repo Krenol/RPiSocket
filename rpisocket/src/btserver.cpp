@@ -1,4 +1,5 @@
 #include "btserver.hpp"
+#include "socket_exception.hpp"
 
 rpisocket::BTServer::BTServer()
 {
@@ -24,43 +25,41 @@ rpisocket::BTServer::~BTServer()
     close(sock_);
 }
 
-bool rpisocket::BTServer::hasConnection() const
-{
-    return connected_;
-}
 
 bool rpisocket::BTServer::connect() const
 {
-    std::lock_guard<std::mutex> guard(mtx_);
-    char buf[1024] = { 0 };
-    listen(sock_, 1);
-    client_ = accept(sock_, (struct sockaddr *)&client_address_, &opt_);
-    ba2str( &client_address_.rc_bdaddr, buf );
-    fprintf(stderr, "accepted connection from %s\n", buf);
-    memset(buf, 0, sizeof(buf));
-    connected_ = true;
+    connected_ = false;
+    try {   
+        std::lock_guard<std::mutex> guard(mtx_);
+        char* buf;
+        listen(sock_, 1);
+        client_ = accept(sock_, (struct sockaddr *)&client_address_, &opt_);
+        ba2str( &client_address_.rc_bdaddr, buf );
+        client_addr_ = std::string(buf);
+        memset(buf, 0, sizeof(buf));
+        connected_ = true;
+    } catch(...) {
+        
+    }
+    
     return connected_;
 }
 
 int rpisocket::BTServer::writeBytes(const std::string& msg) const
 {
+    checkConnection();
     int status = -1;
-    if(!connected_){
-        return status; 
-    } 
     std::lock_guard<std::mutex> guard(mtx_);
     status = write(client_, msg.c_str(), msg.length());
     if(status == -1){
-        connected_ = false;
+        throwConnectionLost();
     }
     return status;
 }
 
 std::string rpisocket::BTServer::readBytes() const
 {
-    if(!connected_){
-        return NOTCONNECTED;
-    }
+    checkConnection();
     char buf[1024] = { 0 };
     std::lock_guard<std::mutex> guard(mtx_);
     int bytes_read = read(client_, buf, sizeof(buf));
@@ -69,7 +68,7 @@ std::string rpisocket::BTServer::readBytes() const
         return (std::string)buf;
     }
     if(bytes_read == -1){
-        connected_ = false;
+        throwConnectionLost();
     }
     return NODATA;
 }
@@ -77,5 +76,5 @@ std::string rpisocket::BTServer::readBytes() const
 
 std::string rpisocket::BTServer::getConnectedClient() const
 {
-    return std::string(mac_addr_);
+    return client_addr_;
 }

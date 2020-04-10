@@ -1,4 +1,5 @@
 #include "server.hpp"
+#include "socket_exception.hpp"
 
 void rpisocket::Server::readThreadOn() const
 {
@@ -51,4 +52,21 @@ void rpisocket::Server::notify(const std::string& msg) const
             continue;
         }
     }
+}
+
+
+void rpisocket::Server::checkConnection() const {
+    if(!connected_){
+        throw socket_exception("no open connection; connect to a client first via connect()");
+    }
+}
+
+void rpisocket::Server::throwConnectionLost() const {
+    connected_ = false;
+    throw socket_exception("lost connection to client!");
+}
+
+bool rpisocket::Server::hasConnection() const
+{
+    return connected_;
 }
