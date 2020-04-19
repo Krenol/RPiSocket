@@ -5,6 +5,7 @@
 #include <string>
 #include <chrono>
 #include <thread>
+#include <functional>
 #include <mutex>      
 
 #ifndef RPISOCKET_SERVER_H
@@ -13,7 +14,7 @@
 #define NOTCONNECTED "not connected"
 #define NODATA "no data"
 
-typedef const std::function<void(std::string)>* subFunc;
+typedef std::function<void(const std::string&)>* subFunc;
 
 namespace rpisocket {
 

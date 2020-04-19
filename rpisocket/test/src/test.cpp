@@ -2,6 +2,8 @@
 #include <iostream>
 #include <chrono>
 #include <ctime>
+#include <functional>
+#include <string>
 #include <map>
 
 static std::map<int, std::string> statusMap = {{200, "OK"}, {201, "Created"}, {202, "Accepted"}, {400, "Bad Request"}};
@@ -17,11 +19,16 @@ std::string createRestMsg(int statusCode, std::string contentType, std::string c
     return response;
 }
 
+void test(const std::string& val) {
+
+}
 
 int main() {
     int port = 8888;
+    std::function<void(const std::string&)> t = test;
     std::cout << "creating wifi server on port " << port << std::endl;
     rpisocket::WiFiServer server(port);
+    subFunc tt = &t;
     std::cout << "waiting for connection..." << std::endl;
     server.connect();
     std::cout << "got connection :)" << std::endl;
