@@ -19,10 +19,10 @@ namespace rpisocket {
     public:
         WiFiServer(int port);
         ~WiFiServer();
-
-        bool connect() const;
-        std::string readBytes() const;
-        int writeBytes(const std::string& msg) const;
+        bool disconnect();
+        bool connect();
+        std::string readBytes();
+        int writeBytes(const std::string& msg);
         std::string getConnectedClient() const;
     };
 }

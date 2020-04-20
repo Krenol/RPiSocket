@@ -1,5 +1,6 @@
 #include "btserver.hpp"
 #include "socket_exception.hpp"
+#include <iostream>
 
 rpisocket::BTServer::BTServer()
 {
@@ -21,19 +22,25 @@ rpisocket::BTServer::~BTServer()
 {
     shutdown(sock_, 2);
     //close the connection
-    close(client_);
+    disconnect();
     close(sock_);
 }
 
+bool rpisocket::BTServer::disconnect(){
+    close(client_);
+}
 
-bool rpisocket::BTServer::connect() const
+bool rpisocket::BTServer::connect()
 {
     connected_ = false;
+    std::lock_guard<std::mutex> guard(mtx_);
     try {   
-        std::lock_guard<std::mutex> guard(mtx_);
-        char* buf;
+        char buf[1024] = { 0 };
         listen(sock_, 1);
         client_ = accept(sock_, (struct sockaddr *)&client_address_, &opt_);
+        if(client_ < 0){
+            return false;
+        }
         ba2str( &client_address_.rc_bdaddr, buf );
         client_addr_ = std::string(buf);
         memset(buf, 0, sizeof(buf));
@@ -45,19 +52,20 @@ bool rpisocket::BTServer::connect() const
     return connected_;
 }
 
-int rpisocket::BTServer::writeBytes(const std::string& msg) const
+int rpisocket::BTServer::writeBytes(const std::string& msg)
 {
     checkConnection();
     int status = -1;
     std::lock_guard<std::mutex> guard(mtx_);
     status = write(client_, msg.c_str(), msg.length());
     if(status == -1){
+        connected_ = false;
         throwConnectionLost();
     }
     return status;
 }
 
-std::string rpisocket::BTServer::readBytes() const
+std::string rpisocket::BTServer::readBytes()
 {
     checkConnection();
     char buf[1024] = { 0 };
@@ -68,6 +76,7 @@ std::string rpisocket::BTServer::readBytes() const
         return (std::string)buf;
     }
     if(bytes_read == -1){
+        connected_ = false;
         throwConnectionLost();
     }
     return NODATA;

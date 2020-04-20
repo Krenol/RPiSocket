@@ -25,17 +25,26 @@ void test(const std::string& val) {
 
 int main() {
     int port = 8888;
-    std::function<void(const std::string&)> t = test;
-    std::cout << "creating wifi server on port " << port << std::endl;
+    int number = 1;
+    //rpisocket::BTServer server;
     rpisocket::WiFiServer server(port);
-    subFunc tt = &t;
-    std::cout << "waiting for connection..." << std::endl;
-    server.connect();
-    std::cout << "got connection :)" << std::endl;
-    std::cout << "connected client: " << server.getConnectedClient() << std::endl;
-    std::string data = "<h1>Test Msg</h1>";
-    
-    server.writeBytes(createRestMsg(200, "text/html", "UTF-8", data));
-    std::cout << "msg sent!" << std::endl << std::endl;
-
+    std::string data;
+    srand (static_cast <unsigned> (time(0)));
+    while(true){
+        std::cout << "waiting for connection..." << std::endl;
+        server.connect();
+        std::cout << "success!" << std::endl;
+        bool status = 1;
+        while(server.hasConnection() && status){
+            try{
+                float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+                data = "{\"distLeft\":" + std::to_string(r) + "}";
+                status = server.writeBytes(data);
+                std::cout << "msg: " << server.readBytes() << std::endl;
+            } catch(...){
+                status = 0;
+            }
+        }
+        server.disconnect();
+    }
 }

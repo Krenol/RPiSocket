@@ -1,13 +1,13 @@
 #include "server.hpp"
 #include "socket_exception.hpp"
 
-void rpisocket::Server::readThreadOn() const
+void rpisocket::Server::readThreadOn()
 {
     threadOn_ = true;
     thread_ = std::thread(&Server::readBuffer, this);
 }
 
-void rpisocket::Server::readBuffer() const
+void rpisocket::Server::readBuffer()
 {
     while(threadOn_)
     {
@@ -19,13 +19,13 @@ void rpisocket::Server::readBuffer() const
     }
 }
 
-void rpisocket::Server::readThreadOff() const
+void rpisocket::Server::readThreadOff()
 {
     threadOn_ = false;
     thread_.join();
 }
 
-int rpisocket::Server::subscribe(subFunc func) const
+int rpisocket::Server::subscribe(subFunc func)
 {
     std::lock_guard<std::mutex> guard(mtx_);
     subs_.push_back(func);
@@ -33,7 +33,7 @@ int rpisocket::Server::subscribe(subFunc func) const
 }
 
 
-bool rpisocket::Server::unsubscribe(int pos) const
+bool rpisocket::Server::unsubscribe(int pos)
 {
     if(pos >= subs_.size() || pos < 0) return false;
 
@@ -42,7 +42,7 @@ bool rpisocket::Server::unsubscribe(int pos) const
     return true;
 }
 
-void rpisocket::Server::notify(const std::string& msg) const
+void rpisocket::Server::notify(const std::string& msg)
 {
     std::lock_guard<std::mutex> guard(mtx_);
     for(auto f : subs_) {
@@ -61,7 +61,7 @@ void rpisocket::Server::checkConnection() const {
     }
 }
 
-void rpisocket::Server::throwConnectionLost() const {
+void rpisocket::Server::throwConnectionLost() {
     connected_ = false;
     throw socket_exception("lost connection to client!");
 }

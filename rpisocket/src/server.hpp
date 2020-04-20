@@ -21,30 +21,31 @@ namespace rpisocket {
     class Server
     {
     private:
-        mutable std::thread thread_;
-        mutable bool threadOn_;
-        mutable std::vector<subFunc> subs_;
-        void notify(const std::string& msg) const;
-        void readBuffer() const;
+        std::thread thread_;
+        bool threadOn_;
+        std::vector<subFunc> subs_;
+        void notify(const std::string& msg);
+        void readBuffer();
 
     protected:
         int sock_;
         const std::chrono::milliseconds wait_duration_ = std::chrono::milliseconds(50);
-        mutable std::mutex mtx_;
-        mutable bool connected_ {false};
+        std::mutex mtx_;
+        bool connected_ {false};
         void checkConnection() const;
-        void throwConnectionLost() const;
+        void throwConnectionLost();
 
     public:
-        virtual bool connect() const = 0;
+        virtual bool connect() = 0;
         virtual std::string getConnectedClient() const = 0;
-        virtual std::string readBytes() const = 0;
-        virtual int writeBytes(const std::string& msg) const = 0;
+        virtual std::string readBytes() = 0;
+        virtual int writeBytes(const std::string& msg) = 0;
+        virtual bool disconnect() = 0;
         bool hasConnection() const;
-        void readThreadOn() const;
-        void readThreadOff() const;
-        int subscribe(subFunc func) const;
-        bool unsubscribe(int pos) const;
+        void readThreadOn();
+        void readThreadOff();
+        int subscribe(subFunc func);
+        bool unsubscribe(int pos);
     };
 }
 #endif
