@@ -6,6 +6,7 @@
 #include <chrono>
 #include <thread>
 #include <functional>
+#include <memory>
 #include <mutex>      
 
 #ifndef RPISOCKET_SERVER_H
@@ -14,7 +15,7 @@
 #define NOTCONNECTED "not connected"
 #define NODATA "no data"
 
-typedef std::function<void(const std::string&)>* subFunc;
+typedef std::function<void(const std::string&)> subFunc;
 
 namespace rpisocket {
 
@@ -23,7 +24,7 @@ namespace rpisocket {
     private:
         std::thread thread_;
         bool threadOn_;
-        std::vector<subFunc> subs_;
+        std::vector<std::unique_ptr<subFunc>> subs_;
         void notify(const std::string& msg);
         void readBuffer();
 
@@ -44,7 +45,7 @@ namespace rpisocket {
         bool hasConnection() const;
         void readThreadOn();
         void readThreadOff();
-        int subscribe(subFunc func);
+        int subscribe(std::unique_ptr<subFunc> func);
         bool unsubscribe(int pos);
     };
 }
