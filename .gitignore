@@ -30,3 +30,16 @@
 *.exe
 *.out
 *.app
+
+#.vs folder
+.vs/
+
+#output folder
+output/
+out/
+
+#build folder
+build/
+
+#vs code folder
+.vscode/
