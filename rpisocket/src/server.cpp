@@ -25,10 +25,10 @@ void rpisocket::Server::readThreadOff()
     thread_.join();
 }
 
-int rpisocket::Server::subscribe(subFunc func)
+int rpisocket::Server::subscribe(std::unique_ptr<subFunc> func)
 {
     std::lock_guard<std::mutex> guard(mtx_);
-    subs_.push_back(func);
+    subs_.push_back(std::move(func));
     return subs_.size() - 1;
 }
 
@@ -45,9 +45,9 @@ bool rpisocket::Server::unsubscribe(int pos)
 void rpisocket::Server::notify(const std::string& msg)
 {
     std::lock_guard<std::mutex> guard(mtx_);
-    for(auto f : subs_) {
+    for(auto i = 0; i < subs_.size(); i++) {
         try{
-            (*f)(msg);
+            (*subs_.at(i))(msg);
         } catch(...) {
             continue;
         }
