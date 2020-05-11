@@ -66,6 +66,7 @@ std::string rpisocket::WiFiServer::readBytes() {
         connected_ = false;
         throwConnectionLost();
     }
+    return "";
 }
 
 int rpisocket::WiFiServer::writeBytes(const std::string& msg) {
