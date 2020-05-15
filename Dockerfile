@@ -3,7 +3,6 @@ ARG VERSION=041518
 FROM raspbian/stretch:${VERSION}
 
 ENV PROJECT_NAME rpisocket
-ENV EXEC_FILE rpisocket_test_project
 
 WORKDIR /data
 
@@ -27,5 +26,3 @@ RUN mkdir build && cd build && cmake ../${PROJECT_NAME}
 
 #build
 RUN cd build && cmake --build .
-
-#CMD "cd ${PROJECT_NAME}/build && sudo ./${EXEC_FILE}"
