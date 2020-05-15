@@ -1,0 +1,8 @@
+version: '3.7'
+services:
+    rpidrone:
+        build: '.'
+        privileged: true
+        command: "sudo /data/rpisocket/build/rpisocket_test_project"
+        ports: 
+            - '8888:8888'
