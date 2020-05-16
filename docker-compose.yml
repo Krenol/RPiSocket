@@ -1,8 +1,10 @@
 version: '3.7'
 services:
-    rpidrone:
+    rpisocket:
         build: '.'
         privileged: true
+        environment:
+            - SOCKET_PORT=${SOCKET_PORT}
         command: "sudo /data/rpisocket/build/rpisocket_test_project"
         ports: 
-            - '8888:8888'
+            - "${SOCKET_PORT}:${SOCKET_PORT}"

@@ -4,7 +4,9 @@
 #include <ctime>
 #include <functional>
 #include <string>
+#include <cstdlib>
 #include <map>
+#include <stdlib.h>
 
 static std::map<int, std::string> statusMap = {{200, "OK"}, {201, "Created"}, {202, "Accepted"}, {400, "Bad Request"}};
 
@@ -24,11 +26,28 @@ void test(const std::string& val) {
 }
 
 int main() {
-    int port = 8888;
+    int port;
+    try{
+        auto env_var = std::getenv("SOCKET_PORT");
+        if(env_var){
+            std::cout << "env_var: " << env_var << std::endl;
+            port = std::stoi(env_var); 
+        } else {
+            std::cout << "env_var: NULL!!" << std::endl;
+            port = 8888;
+        }
+        
+    } catch(...){
+        port = 8888;
+    }
+
+    
+    
     int number = 1;
     //rpisocket::BTServer server;
     rpisocket::WiFiServer server(port);
     std::string data;
+    std::cout << "created socket on port " << port << " with ip address " << server.getServerIp() << std::endl;
     srand (static_cast <unsigned> (time(0)));
     while(true){
         std::cout << "waiting for connection..." << std::endl;

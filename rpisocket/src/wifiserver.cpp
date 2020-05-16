@@ -84,3 +84,7 @@ int rpisocket::WiFiServer::writeBytes(const std::string& msg) {
 std::string rpisocket::WiFiServer::getConnectedClient() const {
     return inet_ntoa(client_.sin_addr);
 }
+
+std::string rpisocket::WiFiServer::getServerIp() const {
+    return inet_ntoa(server_.sin_addr);
+}

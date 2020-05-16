@@ -24,6 +24,7 @@ namespace rpisocket {
         std::string readBytes();
         int writeBytes(const std::string& msg);
         std::string getConnectedClient() const;
+        std::string getServerIp() const;
     };
 }
 #endif
