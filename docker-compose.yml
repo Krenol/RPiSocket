@@ -5,6 +5,7 @@ services:
         privileged: true
         environment:
             - SOCKET_PORT=${SOCKET_PORT}
+            - HOME=/data
         command: "sudo /data/rpisocket/build/rpisocket_test_project"
         ports: 
             - "${SOCKET_PORT}:${SOCKET_PORT}"
