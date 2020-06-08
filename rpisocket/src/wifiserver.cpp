@@ -1,7 +1,10 @@
 #include "wifiserver.hpp"
 #include "socket_exception.hpp"
 #include <arpa/inet.h>
+#include <sys/ioctl.h>
+#include <net/if.h>
 #include <iostream>
+#include <string.h>
 
 rpisocket::WiFiServer::WiFiServer(int port)
 {
@@ -86,5 +89,12 @@ std::string rpisocket::WiFiServer::getConnectedClient() const {
 }
 
 std::string rpisocket::WiFiServer::getServerIp() const {
-    return inet_ntoa(server_.sin_addr);
+    //from https://stackoverflow.com/a/2283541
+    struct ifreq ifr;
+    ifr.ifr_addr.sa_family = AF_INET;
+
+    /* I want IP address attached to "wlan0" */
+    strncpy(ifr.ifr_name, "wlan0", IFNAMSIZ-1);
+    ioctl(sock_, SIOCGIFADDR, &ifr);
+    return inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr);
 }

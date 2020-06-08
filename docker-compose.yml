@@ -1,10 +1,11 @@
 version: '3.7'
 services:
     rpisocket:
-        build: '.'
-        environment:
-            - SOCKET_PORT=${SOCKET_PORT}
-            - BUILD_TEST=ON
+        build: 
+            context: '.'
+            args:
+                - SOCKET_PORT=${SOCKET_PORT}
+                - BUILD_TEST=ON
         privileged: true
         ports: 
             - "${SOCKET_PORT}:${SOCKET_PORT}"

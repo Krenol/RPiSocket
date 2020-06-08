@@ -1,9 +1,6 @@
-#include <unistd.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
-#include <iostream>
-#include <string>
 #include "server.hpp"
 
 #ifndef RPISOCKET_WIFISERVER_H
