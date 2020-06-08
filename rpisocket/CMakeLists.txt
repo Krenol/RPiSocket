@@ -2,7 +2,7 @@
 # project specific logic here.
 #
 cmake_minimum_required (VERSION 3.4)
-set(CMAKE_CXX_STANDARD 11)  # enable C++11 standard
+set(CMAKE_CXX_STANDARD 14)  # enable C++14 standard
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 project (RPiSocket VERSION 0.0.42)
@@ -14,6 +14,11 @@ set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR})
  
 set(PROJECT_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include)
 set(PROJECT_SOURCE_DIR ${PROJECT_SOURCE_DIR}/src)
+
+if (NOT "$ENV{BUILD_TEST}" STREQUAL "")
+    set(BUILD_TEST "$ENV{BUILD_TEST}" CACHE INTERNAL "Copied from environment variable")
+endif()
+message("BUILD_TEST = ${BUILD_TEST}")
 
 set(RPISOCKET_PROJECT_SRCS 
 ${PROJECT_SOURCE_DIR}/btserver.cpp
@@ -34,4 +39,6 @@ target_include_directories(${PROJECT_NAME}
         ${PROJECT_SOURCE_DIR}
 )
 
-add_subdirectory (test)
+if(${BUILD_TEST})
+    add_subdirectory(test)
+endif()

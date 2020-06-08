@@ -2,10 +2,9 @@ version: '3.7'
 services:
     rpisocket:
         build: '.'
-        privileged: true
         environment:
             - SOCKET_PORT=${SOCKET_PORT}
-            - HOME=/data
-        command: "sudo /data/rpisocket/build/rpisocket_test_project"
+            - BUILD_TEST=ON
+        privileged: true
         ports: 
             - "${SOCKET_PORT}:${SOCKET_PORT}"
