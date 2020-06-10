@@ -14,8 +14,7 @@ void rpisocket::Server::readBuffer()
         //read incoming msg
         auto msg = readBytes();
         //notify all subscribed agents
-        notify(msg);
-        std::this_thread::sleep_for(wait_duration_);
+        notifyAll(msg);
     }
 }
 
@@ -24,36 +23,6 @@ void rpisocket::Server::readThreadOff()
     threadOn_ = false;
     thread_.join();
 }
-
-int rpisocket::Server::subscribe(std::unique_ptr<subFunc> func)
-{
-    std::lock_guard<std::mutex> guard(mtx_);
-    subs_.push_back(std::move(func));
-    return subs_.size() - 1;
-}
-
-
-bool rpisocket::Server::unsubscribe(int pos)
-{
-    if(pos >= subs_.size() || pos < 0) return false;
-
-    std::lock_guard<std::mutex> guard(mtx_);
-    subs_.erase (subs_.begin() + pos);
-    return true;
-}
-
-void rpisocket::Server::notify(const std::string& msg)
-{
-    std::lock_guard<std::mutex> guard(mtx_);
-    for(auto i = 0; i < subs_.size(); i++) {
-        try{
-            (*subs_.at(i))(msg);
-        } catch(...) {
-            continue;
-        }
-    }
-}
-
 
 void rpisocket::Server::checkConnection() const {
     if(!connected_){

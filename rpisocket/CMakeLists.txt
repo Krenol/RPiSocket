@@ -11,9 +11,10 @@ set(CMAKE_BINARY_DIR ${CMAKE_SOURCE_DIR}/build)
  
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR})
 set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR})
- 
+
 set(PROJECT_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include)
 set(PROJECT_SOURCE_DIR ${PROJECT_SOURCE_DIR}/src)
+set(DESIGN_PATTERNS_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/external/CppDesignPatterns CACHE INTERNAL "Path to include folder for CppDesignPatterns")
 
 if (NOT "$ENV{BUILD_TEST}" STREQUAL "")
     set(BUILD_TEST "$ENV{BUILD_TEST}" CACHE INTERNAL "Copied from environment variable")
@@ -28,6 +29,7 @@ ${PROJECT_SOURCE_DIR}/wifiserver.cpp
  
 include_directories(${PROJECT_INCLUDE_DIR})
 include_directories(${PROJECT_SOURCE_DIR})
+include_directories(${DESIGN_PATTERNS_INCLUDE_DIR})
 
 add_library(${PROJECT_NAME} SHARED ${RPISOCKET_PROJECT_SRCS})
 
@@ -39,6 +41,11 @@ target_include_directories(${PROJECT_NAME}
         ${PROJECT_SOURCE_DIR}
 )
 
+find_library(design_patterns REQUIRED)
+target_link_libraries(${PROJECT_NAME} design_patterns)
+
 if(${BUILD_TEST})
     add_subdirectory(test)
 endif()
+
+add_subdirectory (external/CppDesignPatterns/design_patterns)
