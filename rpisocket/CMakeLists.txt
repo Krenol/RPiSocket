@@ -29,7 +29,6 @@ ${PROJECT_SOURCE_DIR}/wifiserver.cpp
  
 include_directories(${PROJECT_INCLUDE_DIR})
 include_directories(${PROJECT_SOURCE_DIR})
-include_directories(${DESIGN_PATTERNS_INCLUDE_DIR})
 
 add_library(${PROJECT_NAME} SHARED ${RPISOCKET_PROJECT_SRCS})
 
@@ -41,11 +40,8 @@ target_include_directories(${PROJECT_NAME}
         ${PROJECT_SOURCE_DIR}
 )
 
-find_library(design_patterns REQUIRED)
 target_link_libraries(${PROJECT_NAME} design_patterns)
 
 if(${BUILD_TEST})
     add_subdirectory(test)
 endif()
-
-add_subdirectory (external/CppDesignPatterns/design_patterns)
