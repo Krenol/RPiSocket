@@ -15,7 +15,7 @@
 
 namespace rpisocket {
 
-    class Server : design_patterns::Publisher<std::string>
+    class Server : public design_patterns::Publisher<std::string>
     {
     private:
         std::thread thread_;
