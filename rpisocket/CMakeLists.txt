@@ -44,4 +44,6 @@ target_link_libraries(${PROJECT_NAME} design_patterns)
 
 if(${BUILD_TEST})
     add_subdirectory(test)
+else()
+add_subdirectory(test/CppDesignPatterns/design_patterns)
 endif()

@@ -10,7 +10,7 @@ rpisocket::WiFiServer::WiFiServer(int port)
 {
     int opt = 1;
     sock_ = socket(AF_INET, SOCK_STREAM, 0);
-    if(sock_ <= 0){
+    if(sock_ < 0){
         throw socket_exception("error opening socket!");
     }
 

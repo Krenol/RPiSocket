@@ -10,8 +10,7 @@ namespace rpisocket {
     class BTServer : public Server
     {
     private:
-        const std::string UUID = "81CA25AF-9ACB-4A76-ACD2-FF0D27D04EEE";
-        mutable int client_;
+        int client_;
         sockaddr_rc local_address_ = {0}, client_address_ = {0};
         socklen_t opt_;
         std::string client_addr_ = "";

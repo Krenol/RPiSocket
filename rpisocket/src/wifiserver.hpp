@@ -10,10 +10,11 @@ namespace rpisocket {
     class WiFiServer : public Server
     {
     private:
-        mutable int sock_, newsock_, port_;
-        mutable struct sockaddr_in server_, client_;
+        int sock_, newsock_, port_;
+        struct sockaddr_in server_, client_;
 
     public:
+
         WiFiServer(int port);
         ~WiFiServer();
         bool disconnect();
