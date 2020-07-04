@@ -40,10 +40,9 @@ target_include_directories(${PROJECT_NAME}
         ${PROJECT_SOURCE_DIR}
 )
 
-target_link_libraries(${PROJECT_NAME} design_patterns)
+target_link_libraries(${PROJECT_NAME} PRIVATE design_patterns)
+add_subdirectory(external/CppDesignPatterns/design_patterns)
 
 if(${BUILD_TEST})
     add_subdirectory(test)
-else()
-add_subdirectory(test/CppDesignPatterns/design_patterns)
 endif()

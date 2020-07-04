@@ -1,3 +1,0 @@
-[submodule "rpisocket/test/external/CppDesignPatterns"]
-	path = rpisocket/test/external/CppDesignPatterns
-	url = git@github.com:Krenol/CppDesignPatterns.git
