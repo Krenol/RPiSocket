@@ -15,8 +15,6 @@ include_directories("${PROJECT_BINARY_DIR}")
 include_directories("${PROJECT_INCLUDE_DIR}")
 include_directories(${DESIGN_PATTERNS_INCLUDE_DIR})
 
-add_subdirectory (external/CppDesignPatterns/design_patterns)
-
 # Add source to this project's executable.
 add_executable (rpisocket_test_project ${TEST_PROJECT_SRCS})
 

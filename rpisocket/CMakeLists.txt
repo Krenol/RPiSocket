@@ -14,7 +14,6 @@ set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR})
 
 set(PROJECT_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include)
 set(PROJECT_SOURCE_DIR ${PROJECT_SOURCE_DIR}/src)
-set(DESIGN_PATTERNS_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/external/CppDesignPatterns CACHE INTERNAL "Path to include folder for CppDesignPatterns")
 
 if (NOT "$ENV{BUILD_TEST}" STREQUAL "")
     set(BUILD_TEST "$ENV{BUILD_TEST}" CACHE INTERNAL "Copied from environment variable")
@@ -40,8 +39,10 @@ target_include_directories(${PROJECT_NAME}
         ${PROJECT_SOURCE_DIR}
 )
 
+
+add_subdirectory (external/CppDesignPatterns/design_patterns)
 target_link_libraries(${PROJECT_NAME} PRIVATE design_patterns)
-add_subdirectory(external/CppDesignPatterns/design_patterns)
+
 
 if(${BUILD_TEST})
     add_subdirectory(test)
