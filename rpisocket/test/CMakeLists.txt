@@ -18,7 +18,7 @@ include_directories(${DESIGN_PATTERNS_INCLUDE_DIR})
 # Add source to this project's executable.
 add_executable (rpisocket_test_project ${TEST_PROJECT_SRCS})
 
-target_link_libraries(rpisocket_test_project RPiSocket)
+target_link_libraries(rpisocket_test_project rpisocket)
 find_library(pthread REQUIRED)
 target_link_libraries(${PROJECT_NAME} pthread)
 find_library(bluetooth REQUIRED)
