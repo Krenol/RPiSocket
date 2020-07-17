@@ -15,14 +15,17 @@ namespace rpisocket {
 
     public:
 
-        WiFiServer(int port);
+        WiFiServer(int port, int msg_size = 1024);
         ~WiFiServer();
         bool disconnect();
         bool connect();
         std::string readBytes();
         int writeBytes(const std::string& msg);
         std::string getConnectedClient() const;
-        std::string getServerIp() const;
+        std::string getServerIp();
+        void getConnectedClient(std::string& out);
+        void readBytes(std::string& out);
+        void getServerIp(std::string& out);
     };
 }
 #endif

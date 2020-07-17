@@ -39,3 +39,8 @@ bool rpisocket::Server::hasConnection() const
 {
     return connected_;
 }
+
+rpisocket::Server::Server(int msg_size) : msg_size_{msg_size}
+{
+    
+}

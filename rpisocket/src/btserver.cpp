@@ -2,7 +2,7 @@
 #include "socket_exception.hpp"
 #include <iostream>
 
-rpisocket::BTServer::BTServer()
+rpisocket::BTServer::BTServer(int msg_size)  : Server (msg_size)
 {
     opt_ = sizeof(client_address_);
     bdaddr_t tmp = {0,0,0,0,0,0}; //define empty bt address
@@ -35,7 +35,7 @@ bool rpisocket::BTServer::connect()
     connected_ = false;
     std::lock_guard<std::mutex> guard(mtx_);
     try {   
-        char buf[1024] = { 0 };
+        char buf[msg_size_] = { 0 };
         listen(sock_, 1);
         client_ = accept(sock_, (struct sockaddr *)&client_address_, &opt_);
         if(client_ < 0){
@@ -56,8 +56,10 @@ int rpisocket::BTServer::writeBytes(const std::string& msg)
 {
     checkConnection();
     int status = -1;
-    std::lock_guard<std::mutex> guard(mtx_);
-    status = write(client_, msg.c_str(), msg.length());
+    {
+        std::lock_guard<std::mutex> guard(mtx_);
+        status = write(client_, msg.c_str(), msg.length());
+    }
     if(status == -1){
         connected_ = false;
         throwConnectionLost();
@@ -67,23 +69,37 @@ int rpisocket::BTServer::writeBytes(const std::string& msg)
 
 std::string rpisocket::BTServer::readBytes()
 {
-    checkConnection();
-    char buf[1024] = { 0 };
-    std::lock_guard<std::mutex> guard(mtx_);
-    int bytes_read = read(client_, buf, sizeof(buf));
-
-    if(bytes_read > 0){
-        return (std::string)buf;
-    }
-    if(bytes_read == -1){
-        connected_ = false;
-        throwConnectionLost();
-    }
-    return NODATA;
+    std::string data;
+    readBytes(data);
+    return data;
 }
 
 
 std::string rpisocket::BTServer::getConnectedClient() const
 {
     return client_addr_;
+}
+
+
+void rpisocket::BTServer::getConnectedClient(std::string& out) 
+{
+    out = client_addr_;
+}
+
+void rpisocket::BTServer::readBytes(std::string& out) 
+{
+    checkConnection();
+    char buf[msg_size_] = { 0 };
+    int bytes_read = 0;
+    {
+        std::lock_guard<std::mutex> guard(mtx_);
+        bytes_read = read(client_, buf, sizeof(buf));
+    }
+    if(bytes_read > 0){
+        out =  (std::string)buf;
+    }
+    else {
+        connected_ = false;
+        throwConnectionLost();
+    }     
 }

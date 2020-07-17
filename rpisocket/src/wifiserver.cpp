@@ -6,7 +6,7 @@
 #include <iostream>
 #include <string.h>
 
-rpisocket::WiFiServer::WiFiServer(int port)
+rpisocket::WiFiServer::WiFiServer(int port, int msg_size) : Server (msg_size)
 {
     int opt = 1;
     sock_ = socket(AF_INET, SOCK_STREAM, 0);
@@ -57,19 +57,9 @@ bool rpisocket::WiFiServer::connect() {
 }
 
 std::string rpisocket::WiFiServer::readBytes() {
-    checkConnection();
-    char buf[1024] = { 0 };
-    std::lock_guard<std::mutex> guard(mtx_);
-    int bytes_read = read(newsock_, buf, sizeof(buf));
-
-    if(bytes_read > 0){
-        return (std::string)buf;
-    }
-    else{
-        connected_ = false;
-        throwConnectionLost();
-    }
-    return "";
+    std::string msg;
+    readBytes(msg);
+    return msg;
 }
 
 int rpisocket::WiFiServer::writeBytes(const std::string& msg) {
@@ -88,7 +78,38 @@ std::string rpisocket::WiFiServer::getConnectedClient() const {
     return inet_ntoa(client_.sin_addr);
 }
 
-std::string rpisocket::WiFiServer::getServerIp() const {
+std::string rpisocket::WiFiServer::getServerIp() {
+    std::string ip;
+    getServerIp(ip);
+    return ip;
+}
+
+
+void rpisocket::WiFiServer::getConnectedClient(std::string& out) 
+{
+    out = inet_ntoa(client_.sin_addr);
+}
+
+void rpisocket::WiFiServer::readBytes(std::string& out) 
+{
+    checkConnection();
+    char buf[msg_size_] = { 0 };
+    int bytes_read = 0;
+    {
+        std::lock_guard<std::mutex> guard(mtx_);
+        bytes_read = read(newsock_, buf, sizeof(buf));
+    }
+    if(bytes_read > 0){
+        out = (std::string)buf;
+    }
+    else {
+        connected_ = false;
+        throwConnectionLost();
+    }
+}
+
+void rpisocket::WiFiServer::getServerIp(std::string& out) 
+{
     //from https://stackoverflow.com/a/2283541
     struct ifreq ifr;
     ifr.ifr_addr.sa_family = AF_INET;
@@ -96,5 +117,5 @@ std::string rpisocket::WiFiServer::getServerIp() const {
     /* I want IP address attached to "wlan0" */
     strncpy(ifr.ifr_name, "wlan0", IFNAMSIZ-1);
     ioctl(sock_, SIOCGIFADDR, &ifr);
-    return inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr);
+    out = inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr);
 }

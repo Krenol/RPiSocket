@@ -17,13 +17,15 @@ namespace rpisocket {
 
 
     public:
-        BTServer();
+        BTServer(int msg_size = 1024);
         ~BTServer();
         bool connect();
         bool disconnect();
         std::string readBytes();
         int writeBytes(const std::string& msg);
         std::string getConnectedClient() const;
+        void getConnectedClient(std::string& out);
+        void readBytes(std::string& out);
 
     };
 }
