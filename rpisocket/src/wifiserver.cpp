@@ -48,9 +48,7 @@ bool rpisocket::WiFiServer::connect() {
      
     int c = sizeof(struct sockaddr_in);
     newsock_ = accept(sock_, (struct sockaddr *)&client_, (socklen_t*)&c);
-    if (newsock_ < 0) {
-        throw socket_exception("error opening socket!");
-    } else {
+    if (newsock_ > 0) {
         connected_ = true;
     }
     return connected_;
