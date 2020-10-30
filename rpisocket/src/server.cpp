@@ -8,13 +8,20 @@ void rpisocket::Server::readThreadOn()
 }
 
 void rpisocket::Server::readBuffer()
-{
+{   
+    std::string msg;
     while(threadOn_)
     {
-        //read incoming msg
-        auto msg = readBytes();
-        //notify all subscribed agents
-        notifyAll(msg);
+        try{
+            //read incoming msg
+            readBytes(msg);
+            //notify all subscribed agents
+            notifyAll(msg);
+        } catch(...) {
+            // on error stop thread
+            break;
+        }
+        
     }
 }
 
