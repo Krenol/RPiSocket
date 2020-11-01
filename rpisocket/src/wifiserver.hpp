@@ -15,7 +15,7 @@ namespace rpisocket {
 
     public:
 
-        WiFiServer(int port, int msg_size = 1024);
+        WiFiServer(int port, int msg_size = 1024, char delimeter = '\n');
         ~WiFiServer();
         bool disconnect();
         bool connect();
@@ -25,6 +25,7 @@ namespace rpisocket {
         std::string getServerIp();
         void getConnectedClient(std::string& out);
         void readBytes(std::string& out);
+        void readBytes(std::string& out, int buffer_lgth);
         void getServerIp(std::string& out);
     };
 }

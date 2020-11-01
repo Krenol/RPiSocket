@@ -2,7 +2,7 @@
 #include "socket_exception.hpp"
 #include <iostream>
 
-rpisocket::BTServer::BTServer(int msg_size)  : Server (msg_size)
+rpisocket::BTServer::BTServer(int msg_size, char delimeter)  : Server (msg_size, delimeter)
 {
     opt_ = sizeof(client_address_);
     bdaddr_t tmp = {0,0,0,0,0,0}; //define empty bt address
@@ -70,7 +70,7 @@ int rpisocket::BTServer::writeBytes(const std::string& msg)
 std::string rpisocket::BTServer::readBytes()
 {
     std::string data;
-    readBytes(data);
+    readBytes(data, msg_size_);
     return data;
 }
 
@@ -88,8 +88,13 @@ void rpisocket::BTServer::getConnectedClient(std::string& out)
 
 void rpisocket::BTServer::readBytes(std::string& out) 
 {
+    readBytes(out, msg_size_);
+}
+
+
+void rpisocket::BTServer::readBytes(std::string& out, int buffer_lgth) {
     checkConnection();
-    char buf[msg_size_] = { 0 };
+    char buf[buffer_lgth] = { 0 };
     int bytes_read = 0;
     {
         std::lock_guard<std::mutex> guard(mtx_);
@@ -101,5 +106,5 @@ void rpisocket::BTServer::readBytes(std::string& out)
     else {
         connected_ = false;
         throwConnectionLost();
-    }     
+    }    
 }

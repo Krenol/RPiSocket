@@ -6,7 +6,7 @@
 #include <iostream>
 #include <string.h>
 
-rpisocket::WiFiServer::WiFiServer(int port, int msg_size) : Server (msg_size)
+rpisocket::WiFiServer::WiFiServer(int port, int msg_size, char delimeter) : Server (msg_size, delimeter)
 {
     int opt = 1;
     sock_ = socket(AF_INET, SOCK_STREAM, 0);
@@ -56,7 +56,7 @@ bool rpisocket::WiFiServer::connect() {
 
 std::string rpisocket::WiFiServer::readBytes() {
     std::string msg;
-    readBytes(msg);
+    readBytes(msg, msg_size_);
     return msg;
 }
 
@@ -90,8 +90,13 @@ void rpisocket::WiFiServer::getConnectedClient(std::string& out)
 
 void rpisocket::WiFiServer::readBytes(std::string& out) 
 {
+    readBytes(out, msg_size_);
+}
+
+
+void rpisocket::WiFiServer::readBytes(std::string& out, int buffer_lgth) {
     checkConnection();
-    char buf[msg_size_] = { 0 };
+    char buf[buffer_lgth] = { 0 };
     int bytes_read = 0;
     {
         std::lock_guard<std::mutex> guard(mtx_);
