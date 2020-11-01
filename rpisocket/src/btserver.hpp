@@ -17,7 +17,7 @@ namespace rpisocket {
 
 
     public:
-        BTServer(int msg_size = 1024, char delimeter = '\n');
+        BTServer(int msg_size = 1024, char delimiter = '\n');
         ~BTServer();
         bool connect();
         bool disconnect();

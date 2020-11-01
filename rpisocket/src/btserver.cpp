@@ -2,7 +2,7 @@
 #include "socket_exception.hpp"
 #include <iostream>
 
-rpisocket::BTServer::BTServer(int msg_size, char delimeter)  : Server (msg_size, delimeter)
+rpisocket::BTServer::BTServer(int msg_size, char delimiter)  : Server (msg_size, delimiter)
 {
     opt_ = sizeof(client_address_);
     bdaddr_t tmp = {0,0,0,0,0,0}; //define empty bt address

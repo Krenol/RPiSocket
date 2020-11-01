@@ -6,7 +6,7 @@
 #include <iostream>
 #include <string.h>
 
-rpisocket::WiFiServer::WiFiServer(int port, int msg_size, char delimeter) : Server (msg_size, delimeter)
+rpisocket::WiFiServer::WiFiServer(int port, int msg_size, char delimiter) : Server (msg_size, delimiter)
 {
     int opt = 1;
     sock_ = socket(AF_INET, SOCK_STREAM, 0);

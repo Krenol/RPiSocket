@@ -24,7 +24,7 @@ namespace rpisocket {
 
     protected:
         int sock_, msg_size_;
-        const std::string delimeter_;
+        const std::string delimiter_;
         std::mutex mtx_;
         bool connected_ {false};
         void checkConnection() const;
@@ -32,7 +32,7 @@ namespace rpisocket {
         
 
     public:
-        Server(int msg_size = 1024, char delimeter = '\n');
+        Server(int msg_size = 1024, char delimiter = '\n');
         virtual bool connect() = 0;
         virtual std::string getConnectedClient() const = 0;
         virtual std::string readBytes() = 0;

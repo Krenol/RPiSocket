@@ -9,22 +9,19 @@ void rpisocket::Server::readThreadOn()
 
 void rpisocket::Server::readBuffer()
 {   
-    std::string msg, cur;
-    int buf;
+    std::string msg, buf = "";
+    std::size_t pos;
     while(threadOn_)
     {
         try{
-            //read incoming msg
-            msg = "";
-            cur = "";
-            buf = 0;
-            while(buf++ < msg_size_ && std::string::compare(cur, delimeter_) != 0){
-                readBytes(cur);
-                msg += cur;
-            }
-            
-            //notify all subscribed agents
-            notifyAll(msg);
+            readBytes(msg); // read msg
+            buf += msg; // ad msg to buffer
+            while ((pos = buf.find(delimiter_)) != std::string::npos) { 
+                msg = buf.substr(0, pos); // get msg till delimiter
+                buf.erase(0, pos + delimiter_.length()); // remove msg from buffer
+                //notify all subscribed agents
+                notifyAll(msg);
+            }  
         } catch(...) {
             // on error stop thread
             break;
@@ -55,7 +52,7 @@ bool rpisocket::Server::hasConnection() const
     return connected_;
 }
 
-rpisocket::Server::Server(int msg_size, char delimeter) : msg_size_{msg_size}, delimeter_{delimeter}
+rpisocket::Server::Server(int msg_size, char delimiter) : msg_size_{msg_size}, delimiter_{delimiter}
 {
     
 }
