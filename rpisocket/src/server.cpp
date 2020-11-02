@@ -1,5 +1,6 @@
 #include "server.hpp"
 #include "socket_exception.hpp"
+#include <algorithm>
 
 void rpisocket::Server::readThreadOn()
 {
@@ -9,18 +10,21 @@ void rpisocket::Server::readThreadOn()
 
 void rpisocket::Server::readBuffer()
 {   
-    std::string msg, buf = "";
-    std::size_t pos;
+    std::string msg;
+    std::vector<char> buf, read(msg_size_);
+    std::vector<char>::iterator pos;
     while(threadOn_)
     {
         try{
-            readBytes(msg); // read msg
-            buf += msg; // ad msg to buffer
-            while ((pos = buf.find(delimiter_)) != std::string::npos) { 
-                msg = buf.substr(0, pos); // get msg till delimiter
-                buf.erase(0, pos + delimiter_.length()); // remove msg from buffer
+            readBytes(read); // read msg
+            buf.insert(buf.end(), read.begin(), read.end()); // ad msg to buffer
+            pos = std::find(buf.begin(), buf.end(), delimiter_);
+            while (pos != buf.end()) { 
+                msg = std::string(buf.begin(), pos); // get msg till delimiter
+                buf.erase(buf.begin(), pos); // remove msg from buffer
                 //notify all subscribed agents
                 notifyAll(msg);
+                pos = std::find(buf.begin(), buf.end(), delimiter_);
             }  
         } catch(...) {
             // on error stop thread

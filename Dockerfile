@@ -9,7 +9,7 @@ ENV BUILD_TEST "$BUILD_TEST"
 ENV SOCKET_PORT "$SOCKET_PORT"
 
 WORKDIR /data
-
+RUN apt-get update && apt-get upgrade -y && apt-get install -y libboost-all-dev
 # copy files
 COPY ./${PROJECT_DIR} ./${PROJECT_DIR}
 

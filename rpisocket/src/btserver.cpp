@@ -94,17 +94,23 @@ void rpisocket::BTServer::readBytes(std::string& out)
 
 void rpisocket::BTServer::readBytes(std::string& out, int buffer_lgth) {
     checkConnection();
-    char buf[buffer_lgth] = { 0 };
-    int bytes_read = 0;
+    std::vector<char> buf(buffer_lgth);
+    readBytes(buf);
+    out = std::string(buf.begin(), buf.end());  
+}
+
+namespace rpisocket
+{
+    void BTServer::readBytes(std::vector<char> &buf) 
     {
-        std::lock_guard<std::mutex> guard(mtx_);
-        bytes_read = read(client_, buf, sizeof(buf));
+        int bytes_read = 0;
+        {
+            std::lock_guard<std::mutex> guard(mtx_);
+            bytes_read = read(client_, &buf[0], buf.size());
+        }
+        if(bytes_read < 0){
+            connected_ = false;
+            throwConnectionLost();
+        }
     }
-    if(bytes_read > 0){
-        out =  (std::string)buf;
-    }
-    else {
-        connected_ = false;
-        throwConnectionLost();
-    }    
 }

@@ -26,6 +26,7 @@ namespace rpisocket {
         std::string getConnectedClient() const;
         void getConnectedClient(std::string& out);
         void readBytes(std::string& out, int buffer_lgth);
+        void readBytes(std::vector<char> &buf);
         void readBytes(std::string& out);
 
     };

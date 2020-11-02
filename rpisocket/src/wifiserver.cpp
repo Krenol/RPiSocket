@@ -96,19 +96,10 @@ void rpisocket::WiFiServer::readBytes(std::string& out)
 
 void rpisocket::WiFiServer::readBytes(std::string& out, int buffer_lgth) {
     checkConnection();
-    char buf[buffer_lgth] = { 0 };
-    int bytes_read = 0;
-    {
-        std::lock_guard<std::mutex> guard(mtx_);
-        bytes_read = read(newsock_, buf, sizeof(buf));
-    }
-    if(bytes_read > 0){
-        out = (std::string)buf;
-    }
-    else {
-        connected_ = false;
-        throwConnectionLost();
-    }
+    //char buf[buffer_lgth] = { 0 };
+    std::vector<char> buf(buffer_lgth);
+    readBytes(buf);
+    out = std::string(buf.begin(), buf.end());
 }
 
 void rpisocket::WiFiServer::getServerIp(std::string& out) 
@@ -121,4 +112,20 @@ void rpisocket::WiFiServer::getServerIp(std::string& out)
     strncpy(ifr.ifr_name, "wlan0", IFNAMSIZ-1);
     ioctl(sock_, SIOCGIFADDR, &ifr);
     out = inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr);
+}
+
+namespace rpisocket
+{
+    void WiFiServer::readBytes(std::vector<char> &buf) 
+    {
+        int bytes_read = 0;
+        {
+            std::lock_guard<std::mutex> guard(mtx_);
+            bytes_read = read(newsock_, &buf[0], buf.size());
+        }
+        if(bytes_read < 0){
+            connected_ = false;
+            throwConnectionLost();
+        }
+    }
 }

@@ -15,6 +15,7 @@ int main() {
     srand (static_cast <unsigned> (time(0)));
     std::string msg, buf = "", delimiter_ = "\n";
     int msg_size_=150;
+    
     while(true){
         std::cout << "waiting for connection..." << std::endl;
         server.connect();
