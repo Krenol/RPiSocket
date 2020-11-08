@@ -62,9 +62,7 @@ std::string rpisocket::WiFiServer::readBytes() {
 
 int rpisocket::WiFiServer::writeBytes(const std::string& msg) {
     checkConnection();
-    int status = -1;
-    std::lock_guard<std::mutex> guard(mtx_);
-    status = write(newsock_, msg.c_str(), msg.length());
+    int status = write(newsock_, msg.c_str(), msg.length());
     if(status == -1){
         connected_ = false;
         throwConnectionLost();
@@ -124,11 +122,8 @@ namespace rpisocket
     void WiFiServer::readBytes(std::vector<char> &buf) 
     {
         int bytes_read = 0;
-        {
-            std::lock_guard<std::mutex> guard(mtx_);
-            bytes_read = read(newsock_, &buf[0], buf.size());
-        }
-        if(bytes_read < 0){
+        bytes_read = read(newsock_, &buf[0], buf.size());
+        if(bytes_read <= 0){
             connected_ = false;
             throwConnectionLost();
         }

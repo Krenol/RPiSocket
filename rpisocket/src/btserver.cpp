@@ -55,11 +55,7 @@ bool rpisocket::BTServer::connect()
 int rpisocket::BTServer::writeBytes(const std::string& msg)
 {
     checkConnection();
-    int status = -1;
-    {
-        std::lock_guard<std::mutex> guard(mtx_);
-        status = write(client_, msg.c_str(), msg.length());
-    }
+    int status = write(client_, msg.c_str(), msg.length());
     if(status == -1){
         connected_ = false;
         throwConnectionLost();
@@ -103,11 +99,7 @@ namespace rpisocket
 {
     void BTServer::readBytes(std::vector<char> &buf) 
     {
-        int bytes_read = 0;
-        {
-            std::lock_guard<std::mutex> guard(mtx_);
-            bytes_read = read(client_, &buf[0], buf.size());
-        }
+        int bytes_read = read(client_, &buf[0], buf.size());;
         if(bytes_read < 0){
             connected_ = false;
             throwConnectionLost();
