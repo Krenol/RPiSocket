@@ -17,7 +17,7 @@ namespace rpisocket {
 
 
     public:
-        BTServer(int msg_size = 1024, char delimiter = '\n');
+        BTServer(int msg_size = 1024, const std::string& delimiter = "\n");
         ~BTServer();
         bool connect();
         bool disconnect();

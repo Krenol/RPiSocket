@@ -20,7 +20,7 @@ void rpisocket::Server::readBuffer()
             while ((pos = buf.find(delimiter_)) != std::string::npos) {
                 msg = buf.substr(0, pos);
                 notifyAll(msg);
-                buf.erase(0, pos);
+                buf.erase(0, pos + delimiter_.length());
             }
         } catch(...) {
             // on error stop thread
