@@ -114,6 +114,11 @@ void rpisocket::WiFiServer::getServerIp(std::string& out)
     out = inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr);
 }
 
+int rpisocket::WiFiServer::getPort() 
+{
+    return port_;
+}
+
 namespace rpisocket
 {
     void WiFiServer::readBytes(std::vector<char> &buf) 
