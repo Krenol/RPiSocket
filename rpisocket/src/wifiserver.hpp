@@ -13,6 +13,8 @@ namespace rpisocket {
         int sock_, newsock_, port_;
         struct sockaddr_in server_, client_;
 
+        void initSocket();
+
     public:
 
         WiFiServer(int port, int msg_size = 1024, const std::string& delimiter = "\n");
