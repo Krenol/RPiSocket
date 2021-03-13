@@ -109,6 +109,9 @@ namespace rpisocket
     void BTServer::getServerAddress(std::string& out) {
         out = "";
     }
+    std::string BTServer::getServerAddress() {
+        return "";
+    }
     int BTServer::getServerPort() {
         return -1;
     }
