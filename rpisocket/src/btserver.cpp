@@ -107,7 +107,7 @@ namespace rpisocket
     }
 
     void BTServer::getServerAddress(std::string& out) {
-        return "";
+        out = "";
     }
     int BTServer::getServerPort() {
         return -1;
