@@ -1,6 +1,9 @@
 #include <exception>
 #include <string>
 
+#ifndef RPISOCKET_EXCEPTIONS_H
+#define RPISOCKET_EXCEPTIONS_H
+
 class socket_exception: public std::exception
 {
 public:
@@ -26,3 +29,5 @@ protected:
      */
     std::string msg_;
 };
+
+#endif
