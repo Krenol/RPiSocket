@@ -101,10 +101,10 @@ namespace rpisocket
         return inet_ntoa(client_.sin_addr);
     }
 
-    std::string WiFiServer::getServerIp()
+    std::string WiFiServer::getServerAddress()
     {
         std::string ip;
-        getServerIp(ip);
+        getServerAddress(ip);
         return ip;
     }
 

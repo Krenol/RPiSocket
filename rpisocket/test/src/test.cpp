@@ -11,7 +11,7 @@ int main() {
     int port = 8888;
     //rpisocket::BTServer server;
     rpisocket::WiFiServer server(port);
-    std::cout << "created socket on port " << port << " with ip address " << server.getServerIp() << std::endl;
+    std::cout << "created socket on port " << port << " with ip address " << server.getServerAddress() << std::endl;
     srand (static_cast <unsigned> (time(0)));
     std::string msg, buf = "", delimiter_ = "\n";
     int msg_size_=150;
