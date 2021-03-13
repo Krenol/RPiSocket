@@ -127,7 +127,7 @@ namespace rpisocket
         out = std::string(buf.begin(), buf.end());
     }
 
-    void WiFiServer::getServerIp(std::string &out)
+    void WiFiServer::getServerAddress(std::string &out)
     {
         //from https://stackoverflow.com/a/2283541
         struct ifreq ifr;
@@ -139,7 +139,7 @@ namespace rpisocket
         out = inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr);
     }
 
-    int WiFiServer::getPort()
+    int WiFiServer::getServerPort()
     {
         return port_;
     }

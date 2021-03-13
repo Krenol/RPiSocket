@@ -105,4 +105,11 @@ namespace rpisocket
             throwConnectionLost();
         }
     }
+
+    void BTServer::getServerAddress(std::string& out) {
+        return "";
+    }
+    int BTServer::getServerPort() {
+        return -1;
+    }
 }

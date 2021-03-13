@@ -28,7 +28,8 @@ namespace rpisocket {
         void readBytes(std::string& out, int buffer_lgth);
         void readBytes(std::vector<char> &buf);
         void readBytes(std::string& out);
-
+        virtual void getServerAddress(std::string& out);
+        virtual int getServerPort();
     };
 }
 #endif
