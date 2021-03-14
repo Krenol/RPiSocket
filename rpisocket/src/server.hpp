@@ -5,6 +5,7 @@
 #include <functional>
 #include <memory>
 #include <mutex>      
+#include <atomic>
 #include "design_patterns/design_patterns.hpp"
 
 #ifndef RPISOCKET_SERVER_H
@@ -19,7 +20,7 @@ namespace rpisocket {
     {
     private:
         std::thread thread_;
-        bool threadOn_;
+        std::atomic_bool threadOn_;
         void readBuffer();
 
     protected:
@@ -33,6 +34,7 @@ namespace rpisocket {
 
     public:
         Server(int msg_size = 1024, const std::string& delimiter = "\n");
+        ~Server();
         virtual bool connect() = 0;
         virtual std::string getConnectedClient() const = 0;
         virtual std::string readBytes() = 0;
