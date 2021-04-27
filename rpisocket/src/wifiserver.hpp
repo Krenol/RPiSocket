@@ -19,7 +19,7 @@ namespace rpisocket {
 
         WiFiServer(int port, int msg_size = 1024, const std::string& delimiter = "\n");
         ~WiFiServer();
-        bool disconnect();
+        void disconnect();
         bool connect();
         std::string readBytes();
         int writeBytes(const std::string& msg);

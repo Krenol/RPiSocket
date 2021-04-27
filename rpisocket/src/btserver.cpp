@@ -26,7 +26,7 @@ rpisocket::BTServer::~BTServer()
     close(sock_);
 }
 
-bool rpisocket::BTServer::disconnect(){
+void rpisocket::BTServer::disconnect(){
     close(client_);
 }
 

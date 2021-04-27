@@ -55,7 +55,7 @@ namespace rpisocket
         disconnect();
     }
 
-    bool WiFiServer::disconnect()
+    void WiFiServer::disconnect()
     {
         close(newsock_);
     }

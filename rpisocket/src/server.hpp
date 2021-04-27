@@ -43,7 +43,7 @@ namespace rpisocket {
         virtual void readBytes(std::string& out, int buffer_lgth) = 0;
         virtual void readBytes(std::vector<char> &buf) = 0;
         virtual int writeBytes(const std::string& msg) = 0;
-        virtual bool disconnect() = 0;
+        virtual void disconnect() = 0;
         virtual void getServerAddress(std::string& out) = 0;
         virtual std::string getServerAddress() = 0;
         virtual int getServerPort() = 0;

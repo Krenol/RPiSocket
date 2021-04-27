@@ -20,7 +20,7 @@ namespace rpisocket {
         BTServer(int msg_size = 1024, const std::string& delimiter = "\n");
         ~BTServer();
         bool connect();
-        bool disconnect();
+        void disconnect();
         std::string readBytes();
         int writeBytes(const std::string& msg);
         std::string getConnectedClient() const;
