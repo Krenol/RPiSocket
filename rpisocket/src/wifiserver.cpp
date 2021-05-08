@@ -62,7 +62,6 @@ namespace rpisocket
 
     bool WiFiServer::connect()
     {
-        std::lock_guard<std::mutex> guard(mtx_);
         initSocket();
         connected_ = false;
         listen(sock_, 1);

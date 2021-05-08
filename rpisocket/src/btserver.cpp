@@ -33,7 +33,6 @@ void rpisocket::BTServer::disconnect(){
 bool rpisocket::BTServer::connect()
 {
     connected_ = false;
-    std::lock_guard<std::mutex> guard(mtx_);
     try {   
         char buf[msg_size_] = { 0 };
         listen(sock_, 1);

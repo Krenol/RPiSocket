@@ -4,7 +4,6 @@
 #include <thread>
 #include <functional>
 #include <memory>
-#include <mutex>      
 #include <atomic>
 #include "design_patterns/design_patterns.hpp"
 
@@ -26,7 +25,6 @@ namespace rpisocket {
     protected:
         int sock_, msg_size_;
         const std::string delimiter_;
-        std::mutex mtx_;
         bool connected_ {false};
         void checkConnection() const;
         void throwConnectionLost();
