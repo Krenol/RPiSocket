@@ -30,8 +30,10 @@ namespace rpisocket {
         void readBytes(std::string& out);
         void readBytes(std::string& out, int buffer_lgth);
         void readBytes(std::vector<char> &vec);
+        int readNonBlocking(std::vector<char> &buf);
         void getServerAddress(std::string& out);
         int getServerPort();
+        bool hasData();
 
     };
 }

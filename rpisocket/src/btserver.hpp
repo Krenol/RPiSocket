@@ -1,10 +1,9 @@
-#include "server.hpp"
-#include <bluetooth/bluetooth.h>
-#include <bluetooth/rfcomm.h>
-
 #ifndef RPISOCKET_BTSERVER_H
 #define RPISOCKET_BTSERVER_H
 
+#include "server.hpp"
+#include <bluetooth/bluetooth.h>
+#include <bluetooth/rfcomm.h>
 
 namespace rpisocket {
     class BTServer : public Server

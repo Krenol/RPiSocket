@@ -1,3 +1,6 @@
+#ifndef RPISOCKET_SERVER_H
+#define RPISOCKET_SERVER_H
+
 #include <unistd.h>
 #include <vector>
 #include <string>
@@ -6,9 +9,6 @@
 #include <memory>
 #include <atomic>
 #include "design_patterns/design_patterns.hpp"
-
-#ifndef RPISOCKET_SERVER_H
-#define RPISOCKET_SERVER_H
 
 #define NOTCONNECTED "not connected"
 #define NODATA "no data"

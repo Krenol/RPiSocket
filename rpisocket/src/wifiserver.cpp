@@ -37,14 +37,19 @@ namespace rpisocket
     void WiFiServer::readBytes(std::vector<char> &buf)
     {
         int bytes_read = 0;
-        bytes_read = recv(newsock_, &buf[0], buf.size(), MSG_PEEK);
+        bytes_read = read(newsock_, &buf[0], buf.size());
         if (bytes_read == -1)
         {
             connected_ = false;
             throwConnectionLost();
-        } else if (bytes_read > 0) {
-            bytes_read = read(newsock_, &buf[0], buf.size());
-        }
+        } 
+    }
+
+    int WiFiServer::readNonBlocking(std::vector<char> &buf)
+    {
+        int bytes_read = 0;
+        bytes_read = recv(newsock_, &buf[0], buf.size(), MSG_DONTWAIT);
+        return bytes_read;
     }
 
     WiFiServer::WiFiServer(int port, int msg_size, const std::string &delimiter) : Server(msg_size, delimiter), port_{port}
@@ -143,5 +148,13 @@ namespace rpisocket
     int WiFiServer::getServerPort()
     {
         return port_;
+    }
+    
+    bool WiFiServer::hasData() 
+    {
+        int bytes_read = 0;
+        char buf[1];
+        bytes_read = recv(newsock_, buf, 1, MSG_PEEK);
+        return bytes_read;
     }
 } // namespace rpisocket
