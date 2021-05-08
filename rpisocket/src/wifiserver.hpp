@@ -1,10 +1,11 @@
+#ifndef RPISOCKET_WIFISERVER_H
+#define RPISOCKET_WIFISERVER_H
+
+#define _XOPEN_SOURCE_EXTENDED 1
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include "server.hpp"
-
-#ifndef RPISOCKET_WIFISERVER_H
-#define RPISOCKET_WIFISERVER_H
 
 namespace rpisocket {
     class WiFiServer : public Server

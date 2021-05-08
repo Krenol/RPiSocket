@@ -37,11 +37,13 @@ namespace rpisocket
     void WiFiServer::readBytes(std::vector<char> &buf)
     {
         int bytes_read = 0;
-        bytes_read = recv(newsock_, &buf[0], buf.size(), MSG_DONTWAIT);
+        bytes_read = recv(newsock_, &buf[0], buf.size(), MSG_PEEK);
         if (bytes_read == -1)
         {
             connected_ = false;
             throwConnectionLost();
+        } else if (bytes_read > 0) {
+            bytes_read = read(newsock_, &buf[0], buf.size());
         }
     }
 
