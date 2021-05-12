@@ -153,8 +153,8 @@ namespace rpisocket
     bool WiFiServer::hasData() 
     {
         int bytes_read = 0;
-        char buf[1];
-        bytes_read = recv(newsock_, buf, 1, MSG_PEEK);
+        char buf;
+        bytes_read = recv(newsock_, &buf, 1, MSG_PEEK|MSG_DONTWAIT);
         return bytes_read > 0;
     }
 } // namespace rpisocket
